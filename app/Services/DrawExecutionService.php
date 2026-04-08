@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Jobs\SendRaffleNotification;
 use App\Models\Raffle;
 use App\Models\RaffleAuditLog;
-use App\Models\Ticket;
+use App\Models\RaffleResult;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -52,7 +52,7 @@ class DrawExecutionService
 
                     $selectedTicket->update(['is_winner' => true]);
 
-                    \App\Models\RaffleResult::create([
+                    RaffleResult::create([
                         'raffle_id' => $raffle->id,
                         'prize_id' => $prize->id,
                         'ticket_id' => $selectedTicket->id,

@@ -14,7 +14,7 @@ class PrizeFactory extends Factory
     {
         return [
             'raffle_id' => Raffle::factory(),
-            'name' => fake()->word() . ' Prize',
+            'name' => fake()->word().' Prize',
             'description' => fake()->sentence(),
             'winner_count' => 1,
             'order' => 0,

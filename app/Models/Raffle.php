@@ -11,10 +11,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Raffle extends Model
 {
     use HasFactory;
+
     const STATUS_DRAFT = 'draft';
+
     const STATUS_ACTIVE = 'active';
+
     const STATUS_CLOSED = 'closed';
+
     const STATUS_EXECUTED = 'executed';
+
     const STATUS_DELETED = 'deleted';
 
     protected $fillable = [

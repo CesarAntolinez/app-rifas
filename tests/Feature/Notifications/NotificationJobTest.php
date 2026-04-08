@@ -32,7 +32,7 @@ it('dispatches SendRaffleNotification job on raffle execution', function () {
         'number' => '01',
     ]);
 
-    $service = new DrawExecutionService();
+    $service = new DrawExecutionService;
     $service->execute($raffle, $user);
 
     Queue::assertPushed(SendRaffleNotification::class, function ($job) {

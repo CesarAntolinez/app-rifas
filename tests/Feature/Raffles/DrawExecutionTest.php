@@ -30,7 +30,7 @@ it('creates an audit log after execution', function () {
         'number' => '01',
     ]);
 
-    $service = new DrawExecutionService();
+    $service = new DrawExecutionService;
     $auditLog = $service->execute($raffle, $user);
 
     expect(RaffleAuditLog::where('raffle_id', $raffle->id)->count())->toBe(1);
@@ -56,14 +56,14 @@ it('dispatches notification job after execution', function () {
         'number' => '01',
     ]);
 
-    $service = new DrawExecutionService();
+    $service = new DrawExecutionService;
     $service->execute($raffle, $user);
 
     Queue::assertPushed(SendRaffleNotification::class);
 });
 
 it('audit log has no updated_at column', function () {
-    $auditLog = new RaffleAuditLog();
+    $auditLog = new RaffleAuditLog;
     expect($auditLog::UPDATED_AT)->toBeNull();
     expect($auditLog->timestamps)->toBeFalse();
 });

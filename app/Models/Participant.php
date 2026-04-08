@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Participant extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'raffle_id',
         'name',

@@ -43,7 +43,7 @@ function createRaffleWithTickets(int $ticketCount = 10): array
 it('selects winners and marks tickets as is_winner', function () {
     ['user' => $user, 'raffle' => $raffle] = createRaffleWithTickets(10);
 
-    $service = new DrawExecutionService();
+    $service = new DrawExecutionService;
     $auditLog = $service->execute($raffle, $user);
 
     expect($auditLog)->not->toBeNull();
@@ -53,7 +53,7 @@ it('selects winners and marks tickets as is_winner', function () {
 it('changes raffle status to executed', function () {
     ['user' => $user, 'raffle' => $raffle] = createRaffleWithTickets(5);
 
-    $service = new DrawExecutionService();
+    $service = new DrawExecutionService;
     $service->execute($raffle, $user);
 
     expect($raffle->fresh()->status)->toBe(Raffle::STATUS_EXECUTED);
@@ -62,7 +62,7 @@ it('changes raffle status to executed', function () {
 it('creates audit log with full payload', function () {
     ['user' => $user, 'raffle' => $raffle] = createRaffleWithTickets(5);
 
-    $service = new DrawExecutionService();
+    $service = new DrawExecutionService;
     $auditLog = $service->execute($raffle, $user);
 
     expect($auditLog->payload)->toBeArray();
@@ -93,7 +93,7 @@ it('does not repeat a ticket across multiple prizes', function () {
         ]);
     }
 
-    $service = new DrawExecutionService();
+    $service = new DrawExecutionService;
     $auditLog = $service->execute($raffle, $user);
 
     $winnerTicketIds = collect($auditLog->payload['winners'])->pluck('ticket_id');
@@ -107,7 +107,7 @@ it('throws exception if raffle status is not closed', function () {
         'status' => Raffle::STATUS_ACTIVE,
     ]);
 
-    $service = new DrawExecutionService();
+    $service = new DrawExecutionService;
     expect(fn () => $service->execute($raffle, $user))->toThrow(RuntimeException::class);
 });
 
@@ -118,7 +118,7 @@ it('throws exception if raffle has no participants', function () {
         'status' => Raffle::STATUS_CLOSED,
     ]);
 
-    $service = new DrawExecutionService();
+    $service = new DrawExecutionService;
     expect(fn () => $service->execute($raffle, $user))->toThrow(RuntimeException::class);
 });
 
@@ -128,7 +128,7 @@ it('selects different winners across multiple executions (randomness)', function
     for ($run = 0; $run < 5; $run++) {
         ['user' => $user, 'raffle' => $raffle] = createRaffleWithTickets(20);
 
-        $service = new DrawExecutionService();
+        $service = new DrawExecutionService;
         $auditLog = $service->execute($raffle, $user);
 
         $results[] = $auditLog->payload['winners'][0]['ticket_id'];

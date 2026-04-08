@@ -5,6 +5,7 @@ use App\Models\Raffle;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Services\TicketService;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -31,7 +32,7 @@ it('rejects duplicate ticket (raffle_id, serie, number) combination at the datab
             'serie' => 'A',
             'number' => '42',
         ]);
-    })->toThrow(\Illuminate\Database\QueryException::class);
+    })->toThrow(QueryException::class);
 });
 
 it('rejects duplicate via TicketService', function () {
@@ -42,7 +43,7 @@ it('rejects duplicate via TicketService', function () {
     ]);
     $participant = Participant::factory()->create(['raffle_id' => $raffle->id]);
 
-    $service = new TicketService();
+    $service = new TicketService;
     $service->generateTicket($raffle, $participant, 'A', '42');
 
     expect(fn () => $service->generateTicket($raffle, $participant, 'A', '42'))
@@ -58,7 +59,7 @@ it('allows same number in different series', function () {
     ]);
     $participant = Participant::factory()->create(['raffle_id' => $raffle->id]);
 
-    $service = new TicketService();
+    $service = new TicketService;
     $ticket1 = $service->generateTicket($raffle, $participant, 'A', '42');
     $ticket2 = $service->generateTicket($raffle, $participant, 'B', '42');
 
@@ -73,7 +74,7 @@ it('allows same number in different raffles', function () {
     $participant1 = Participant::factory()->create(['raffle_id' => $raffle1->id]);
     $participant2 = Participant::factory()->create(['raffle_id' => $raffle2->id]);
 
-    $service = new TicketService();
+    $service = new TicketService;
     $ticket1 = $service->generateTicket($raffle1, $participant1, 'A', '42');
     $ticket2 = $service->generateTicket($raffle2, $participant2, 'A', '42');
 
