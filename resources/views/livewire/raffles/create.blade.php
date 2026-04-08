@@ -27,31 +27,25 @@ state([
     'series_count' => 1,
 ]);
 
-$step1Rules = [
-    'name' => ['required', 'string', 'max:255'],
-    'description' => ['nullable', 'string'],
-    'starts_at' => ['required', 'date'],
-    'ends_at' => ['required', 'date', 'after:starts_at'],
-    'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-];
-
-$step2Rules = [
-    'prizes' => ['required', 'array', 'min:1'],
-    'prizes.*.name' => ['required', 'string', 'max:255'],
-    'prizes.*.winner_count' => ['required', 'integer', 'min:1'],
-    'prizes.*.order' => ['required', 'integer', 'min:0'],
-];
-
-$step3Rules = [
-    'ticket_digit_type' => ['required', 'in:double,triple,quadruple'],
-    'series_count' => ['required', 'integer', 'min:1', 'max:100'],
-];
-
+$step1Rules = [];
+$step2Rules = [];
+$step3Rules = [];
 $nextStep = function () {
     if ($this->step === 1) {
-        $this->validate(array_intersect_key($step1Rules, array_flip(['name', 'description', 'starts_at', 'ends_at', 'image'])));
+        $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'starts_at' => ['required', 'date'],
+            'ends_at' => ['required', 'date', 'after:starts_at'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ]);
     } elseif ($this->step === 2) {
-        $this->validate(array_intersect_key($step2Rules, array_flip(['prizes', 'prizes.*.name', 'prizes.*.winner_count', 'prizes.*.order'])));
+        $this->validate([
+            'prizes' => ['required', 'array', 'min:1'],
+            'prizes.*.name' => ['required', 'string', 'max:255'],
+            'prizes.*.winner_count' => ['required', 'integer', 'min:1'],
+            'prizes.*.order' => ['required', 'integer', 'min:0'],
+        ]);
     }
     $this->step++;
 };
@@ -72,11 +66,18 @@ $removePrize = function (int $index) {
 $save = function (RaffleService $raffleService) {
     $this->authorize('create', Raffle::class);
 
-    $this->validate(array_merge(
-        array_intersect_key((array) $step1Rules, array_flip(['name', 'description', 'starts_at', 'ends_at'])),
-        array_intersect_key((array) $step2Rules, array_flip(['prizes', 'prizes.*.name', 'prizes.*.winner_count', 'prizes.*.order'])),
-        array_intersect_key((array) $step3Rules, array_flip(['ticket_digit_type', 'series_count']))
-    ));
+    $this->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'description' => ['nullable', 'string'],
+        'starts_at' => ['required', 'date'],
+        'ends_at' => ['required', 'date', 'after:starts_at'],
+        'prizes' => ['required', 'array', 'min:1'],
+        'prizes.*.name' => ['required', 'string', 'max:255'],
+        'prizes.*.winner_count' => ['required', 'integer', 'min:1'],
+        'prizes.*.order' => ['required', 'integer', 'min:0'],
+        'ticket_digit_type' => ['required', 'in:double,triple,quadruple'],
+        'series_count' => ['required', 'integer', 'min:1', 'max:100'],
+    ]);
 
     $imagePath = null;
     if ($this->image) {
